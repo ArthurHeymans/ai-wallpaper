@@ -27,8 +27,9 @@ A command-line tool that generates stunning wallpapers using AI models. Combines
 
 3. (Optional) Create a `.env` file with your API keys if you don't want to set them in your shell environment:
    ```bash
-   cp .env.example .env
-   # Edit .env with your actual API keys
+   # .env file content example:
+   OPENAI_API_KEY=your_openai_key_here
+   REPLICATE_API_TOKEN=your_replicate_token_here
    ```
    Alternatively, you can set the API keys in your shell environment:
    ```bash
