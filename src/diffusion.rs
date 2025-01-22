@@ -3,17 +3,19 @@ use log::debug;
 use reqwest::blocking::Client;
 use serde_json::json;
 
-pub struct FluxClient {
+pub struct DiffusionClient {
     client: Client,
+    api_url: String,
     api_key: String,
     model_version: String,
     debug: bool,
 }
 
-impl FluxClient {
+impl DiffusionClient {
     pub fn new(api_config: &ApiConfig, debug: bool) -> Self {
         Self {
             client: Client::new(),
+            api_url: api_config.url.clone(),
             api_key: api_config.api_key.clone(),
             model_version: api_config.model.clone(),
             debug,
@@ -37,8 +39,8 @@ impl FluxClient {
         let prediction = self
             .client
             .post(&format!(
-                "https://api.replicate.com/v1/models/{}/predictions",
-                self.model_version
+                "{}/v1/models/{}/predictions",
+                self.api_url, self.model_version
             ))
             .header("Authorization", format!("Bearer {}", self.api_key))
             .json(&json!({

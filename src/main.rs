@@ -1,5 +1,5 @@
 mod config;
-mod flux;
+mod diffusion;
 mod llm;
 
 use clap::{Parser, Subcommand};
@@ -65,13 +65,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .map_err(|e| format!("Failed to generate prompt: {}", e))?;
             debug!("Generated prompt: {}", prompt);
 
-            let flux_client = flux::FluxClient::new(&config.flux.api, cli.debug);
-            let wallpaper_url = flux_client
-                .generate_wallpaper(&prompt, &config.flux.aspect_ratio, config.flux.megapixels)
+            let diffusion_client = diffusion::DiffusionClient::new(&config.diffusion.api, cli.debug);
+            let wallpaper_url = diffusion_client
+                .generate_wallpaper(&prompt, &config.diffusion.aspect_ratio, config.diffusion.megapixels)
                 .map_err(|e| format!("Failed to generate wallpaper: {}", e))?;
             info!("Wallpaper generated, downloading to {}...", output);
 
-            flux_client
+            diffusion_client
                 .download_image(&wallpaper_url, &output)
                 .map_err(|e| format!("Failed to download wallpaper: {}", e))?;
             info!("Wallpaper saved to {}", output);

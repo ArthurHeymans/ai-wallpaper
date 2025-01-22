@@ -11,7 +11,7 @@ pub struct ApiConfig {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct FluxConfig {
+pub struct DiffusionConfig {
     pub api: ApiConfig,
     pub aspect_ratio: String,
     pub megapixels: f32,
@@ -20,7 +20,7 @@ pub struct FluxConfig {
 #[derive(Debug, Deserialize)]
 pub struct AppConfig {
     pub llm_api: ApiConfig,
-    pub flux: FluxConfig,
+    pub diffusion: DiffusionConfig,
     pub default_keywords: Vec<String>,
 }
 
@@ -36,23 +36,23 @@ impl AppConfig {
                 model: config.llm_api.model,
                 api_key: Self::substitute_env_var(&config.llm_api.api_key)?,
             },
-            flux: FluxConfig {
+            diffusion: DiffusionConfig {
                 api: ApiConfig {
-                    url: config.flux.api.url,
-                    model: config.flux.api.model,
-                    api_key: Self::substitute_env_var(&config.flux.api.api_key)?,
+                    url: config.diffusion.api.url,
+                    model: config.diffusion.api.model,
+                    api_key: Self::substitute_env_var(&config.diffusion.api.api_key)?,
                 },
-                aspect_ratio: config.flux.aspect_ratio,
+                aspect_ratio: config.diffusion.aspect_ratio,
                 megapixels: {
                     // Validate megapixels is either 1.0 or 0.25
-                    if config.flux.megapixels != 1.0 && config.flux.megapixels != 0.25 {
+                    if config.diffusion.megapixels != 1.0 && config.diffusion.megapixels != 0.25 {
                         return Err(format!(
                             "Invalid megapixels value: {}. Must be either 1.0 or 0.25",
-                            config.flux.megapixels
+                            config.diffusion.megapixels
                         )
                         .into());
                     }
-                    config.flux.megapixels
+                    config.diffusion.megapixels
                 },
             },
             default_keywords: config.default_keywords,

@@ -8,13 +8,16 @@ llm_api:
   model: "gpt-4o"
   api_key: "${OPENAI_API_KEY}"  # Will be replaced with value from .env
 
-flux_api:
-  url: "https://api.replicate.com/v1/predictions"
-  model: "black-forest-labs/flux-dev"
-  api_key: "${REPLICATE_API_TOKEN}"  # Will be replaced with value from .env
+diffusion:
+  api:
+    url: "https://api.replicate.com/v1/predictions"
+    model: "black-forest-labs/flux-dev"
+    api_key: "${REPLICATE_API_TOKEN}"  # Will be replaced with value from .env
+  aspect_ratio: "16:9"
+  megapixels: 1.0
 
 default_keywords:
   - "nature"
   - "futuristic"
   - "cyberpunk"
-  - "minimalism"
+  - "photorealistic"
