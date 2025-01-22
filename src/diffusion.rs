@@ -37,7 +37,7 @@ impl DiffusionClient {
         // Create prediction
         let prediction = self
             .client
-            .post(&format!(
+            .post(format!(
                 "{}/v1/models/{}/predictions",
                 self.api_url, self.model_version
             ))
@@ -67,7 +67,7 @@ impl DiffusionClient {
 
             let status_response = self
                 .client
-                .get(&format!(
+                .get(format!(
                     "https://api.replicate.com/v1/predictions/{}",
                     prediction_id
                 ))
@@ -103,7 +103,7 @@ impl DiffusionClient {
 
         let image_url = match output {
             Some(v) => v
-                .get(0)
+                .first()
                 .and_then(|v| v.as_str())
                 .map(|s| s.to_string())
                 .ok_or("Failed to get output URL")?,
