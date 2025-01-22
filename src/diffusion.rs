@@ -8,17 +8,15 @@ pub struct DiffusionClient {
     api_url: String,
     api_key: String,
     model_version: String,
-    debug: bool,
 }
 
 impl DiffusionClient {
-    pub fn new(api_config: &ApiConfig, debug: bool) -> Self {
+    pub fn new(api_config: &ApiConfig) -> Self {
         Self {
             client: Client::new(),
             api_url: api_config.url.clone(),
             api_key: api_config.api_key.clone(),
             model_version: api_config.model.clone(),
-            debug,
         }
     }
 
@@ -49,9 +47,7 @@ impl DiffusionClient {
             .send()?;
 
         let mut prediction_json: serde_json::Value = prediction.json()?;
-        if self.debug {
-            debug!("Initial prediction response: {}", prediction_json);
-        }
+        debug!("Initial prediction response: {}", prediction_json);
 
         let prediction_id = prediction_json["id"]
             .as_str()
@@ -78,12 +74,10 @@ impl DiffusionClient {
                 .send()?;
 
             prediction_json = status_response.json()?;
-            if self.debug {
-                debug!(
-                    "Prediction status (attempt {}): {}",
-                    attempts, prediction_json
-                );
-            }
+            debug!(
+                "Prediction status (attempt {}): {}",
+                attempts, prediction_json
+            );
 
             status = prediction_json["status"]
                 .as_str()
