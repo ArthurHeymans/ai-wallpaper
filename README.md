@@ -135,7 +135,6 @@ You can set up a cron job to automatically generate and set a new wallpaper each
    mkdir -p ~/Pictures/wallpapers
    ```
 
-
 ## Requirements
 
 - Rust 1.65+
