@@ -1,4 +1,5 @@
 use crate::config::ApiConfig;
+use log::debug;
 use reqwest::blocking::Client;
 use serde_json::json;
 
@@ -25,7 +26,7 @@ pub fn generate_prompt(
     let response_json: serde_json::Value = response.json()?;
 
     // Log the full response for debugging
-    println!("LLM API Response: {}", response_json);
+    debug!("LLM API Response: {}", response_json);
 
     // Handle the response structure more carefully
     let prompt = response_json["choices"][0]["message"]["content"]

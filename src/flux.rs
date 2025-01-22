@@ -1,4 +1,5 @@
 use crate::config::ApiConfig;
+use log::debug;
 use reqwest::blocking::Client;
 use serde_json::json;
 
@@ -6,14 +7,16 @@ pub struct FluxClient {
     client: Client,
     api_key: String,
     model_version: String,
+    debug: bool,
 }
 
 impl FluxClient {
-    pub fn new(api_config: &ApiConfig) -> Self {
+    pub fn new(api_config: &ApiConfig, debug: bool) -> Self {
         Self {
             client: Client::new(),
             api_key: api_config.api_key.clone(),
             model_version: api_config.model.clone(),
+            debug,
         }
     }
 
@@ -44,7 +47,9 @@ impl FluxClient {
             .send()?;
 
         let mut prediction_json: serde_json::Value = prediction.json()?;
-        println!("Initial prediction response: {}", prediction_json);
+        if self.debug {
+            debug!("Initial prediction response: {}", prediction_json);
+        }
 
         let prediction_id = prediction_json["id"]
             .as_str()
@@ -71,10 +76,12 @@ impl FluxClient {
                 .send()?;
 
             prediction_json = status_response.json()?;
-            println!(
-                "Prediction status (attempt {}): {}",
-                attempts, prediction_json
-            );
+            if self.debug {
+                debug!(
+                    "Prediction status (attempt {}): {}",
+                    attempts, prediction_json
+                );
+            }
 
             status = prediction_json["status"]
                 .as_str()

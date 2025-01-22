@@ -5,6 +5,7 @@ mod llm;
 use clap::{Parser, Subcommand};
 use config::AppConfig;
 use dotenv::dotenv;
+use log::{debug, info};
 use std::path::Path;
 
 #[derive(Parser)]
@@ -16,12 +17,18 @@ struct Cli {
 
     #[arg(short, long, default_value = "config.yaml")]
     config: String,
+
+    /// Enable debug logging
+    #[arg(long, global = true)]
+    debug: bool,
 }
 
 #[derive(Subcommand)]
 enum Commands {
     /// Generate wallpaper using keywords
     Generate {
+        /// Keywords to use for generating the wallpaper (uses defaults if not provided)
+        #[arg(num_args = 0..)]
         keywords: Vec<String>,
 
         #[arg(short, long, default_value = "wallpaper.png")]
@@ -47,25 +54,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match cli.command {
         Commands::Generate { keywords, output } => {
-            let prompt = llm::generate_prompt(&config.llm_api, &keywords)
+            // Combine command-line keywords with default keywords
+            let all_keywords: Vec<String> = keywords
+                .iter()
+                .chain(&config.default_keywords)
+                .map(|s| s.to_string())
+                .collect();
+            
+            let prompt = llm::generate_prompt(&config.llm_api, &all_keywords)
                 .map_err(|e| format!("Failed to generate prompt: {}", e))?;
-            println!("Generated prompt: {}", prompt);
+            debug!("Generated prompt: {}", prompt);
 
-            let flux_client = flux::FluxClient::new(&config.flux.api);
+            let flux_client = flux::FluxClient::new(&config.flux.api, cli.debug);
             let wallpaper_url = flux_client
                 .generate_wallpaper(&prompt, &config.flux.aspect_ratio, config.flux.megapixels)
                 .map_err(|e| format!("Failed to generate wallpaper: {}", e))?;
-            println!("Wallpaper generated, downloading to {}...", output);
+            info!("Wallpaper generated, downloading to {}...", output);
 
             flux_client
                 .download_image(&wallpaper_url, &output)
                 .map_err(|e| format!("Failed to download wallpaper: {}", e))?;
-            println!("Wallpaper saved to {}", output);
+            info!("Wallpaper saved to {}", output);
         }
         Commands::ListKeywords => {
-            println!("Default keywords:");
+            println!("Default keywords:");  // Keep this non-debug since it's a command output
             for keyword in &config.default_keywords {
-                println!("- {}", keyword);
+                println!("- {}", keyword);  // Keep this non-debug since it's a command output
             }
         }
     }
