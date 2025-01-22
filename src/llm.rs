@@ -18,7 +18,7 @@ pub fn generate_prompt(
     });
 
     let response = client
-        .post(&api_config.url)
+        .post(format!("{}/v1/chat/completions", api_config.url))
         .header("Authorization", format!("Bearer {}", api_config.api_key))
         .json(&prompt_request)
         .send()?;

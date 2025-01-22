@@ -78,7 +78,7 @@ Edit `config.yaml` to customize:
 Example config.yaml:
 ```yaml
 llm_api:
-  url: "https://api.openai.com/v1/chat/completions"
+  url: "https://api.openai.com"  # Base URL without endpoint path
   model: "gpt-4o"
   api_key: "${OPENAI_API_KEY}"
 
