@@ -1,0 +1,20 @@
+# Copy this file to config.yaml in the root directory
+# Then create a .env file with your API keys:
+# OPENAI_API_KEY=your_key_here
+# REPLICATE_API_TOKEN=your_token_here
+
+llm_api:
+  url: "https://api.openai.com/v1/chat/completions"
+  model: "gpt-4o"
+  api_key: "${OPENAI_API_KEY}"  # Will be replaced with value from .env
+
+flux_api:
+  url: "https://api.replicate.com/v1/predictions"
+  model: "black-forest-labs/flux-dev"
+  api_key: "${REPLICATE_API_TOKEN}"  # Will be replaced with value from .env
+
+default_keywords:
+  - "nature"
+  - "futuristic"
+  - "cyberpunk"
+  - "minimalism"
