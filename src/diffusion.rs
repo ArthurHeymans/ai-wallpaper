@@ -30,7 +30,8 @@ impl DiffusionClient {
             "prompt": prompt,
             "guidance": 3.5,
             "aspect_ratio": aspect_ratio,
-            "megapixels": megapixels.to_string()
+            "megapixels": megapixels.to_string(),
+            "output_format": "png"
         });
 
         // Create prediction
