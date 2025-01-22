@@ -6,6 +6,7 @@ use clap::{Parser, Subcommand};
 use config::AppConfig;
 use dotenv::dotenv;
 use log::{debug, info};
+use std::env;
 use std::path::Path;
 
 #[derive(Parser)]
@@ -15,8 +16,9 @@ struct Cli {
     #[command(subcommand)]
     command: Commands,
 
-    #[arg(short, long, default_value = "config.yaml")]
-    config: String,
+    /// Path to config file (default: ~/.config/wallpaper-generator/config.yaml)
+    #[arg(short, long, global = true)]
+    config: Option<String>,
 
     /// Enable debug logging
     #[arg(long, global = true)]
@@ -42,12 +44,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
     let cli = Cli::parse();
 
-    // If config file doesn't exist, use the template
-    let config_path = if Path::new(&cli.config).exists() {
-        cli.config.clone()
+    // Determine config path
+    let config_path = if let Some(path) = cli.config {
+        path
     } else {
-        println!("Config file not found, using template...");
-        "templates/config.yaml.template".to_string()
+        // Use default config location
+        let home = env::var("HOME").expect("HOME environment variable not set");
+        let default_path = format!("{}/.config/wallpaper-generator/config.yaml", home);
+        if Path::new(&default_path).exists() {
+            default_path
+        } else {
+            println!("Config file not found, using template...");
+            "templates/config.yaml.template".to_string()
+        }
     };
 
     let config = AppConfig::from_file(&config_path)?;
