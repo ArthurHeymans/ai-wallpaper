@@ -4,13 +4,13 @@
 # REPLICATE_API_TOKEN=your_token_here
 
 llm_api:
-  url: "https://api.openai.com/v1/chat/completions"
+  url: "https://api.openai.com"
   model: "gpt-4o"
   api_key: "${OPENAI_API_KEY}"  # Will be replaced with value from .env
 
 diffusion:
   api:
-    url: "https://api.replicate.com/v1/predictions"
+    url: "https://api.replicate.com"
     model: "black-forest-labs/flux-dev"
     api_key: "${REPLICATE_API_TOKEN}"  # Will be replaced with value from .env
   aspect_ratio: "16:9"
