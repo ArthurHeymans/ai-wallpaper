@@ -112,9 +112,14 @@ You can set up a cron job to automatically generate and set a new wallpaper each
    OUTPUT_FILE=~/Pictures/wallpapers/daily_${DATE}.png
    cargo run -- generate --output $OUTPUT_FILE
    
-   # Set wallpaper with hyprpaper
+   # Set wallpaper (choose one based on your compositor)
+
+   # For Hyprland:
    hyprctl hyprpaper preload "$OUTPUT_FILE"
    hyprctl hyprpaper wallpaper ",$OUTPUT_FILE"
+
+   # For Sway:
+   swaymsg output "*" bg "$OUTPUT_FILE" fill
    ```
 
 2. Make the script executable:
