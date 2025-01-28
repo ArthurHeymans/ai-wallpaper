@@ -11,6 +11,7 @@ A command-line tool that generates stunning wallpapers using AI models. Combines
 - 📝 Configurable default keywords
 - 🐚 Easy-to-use CLI interface
 - 🐛 Debug logging support
+- 🐇 Blazingly fast performance (it's written in rust)
 
 ## Installation
 
